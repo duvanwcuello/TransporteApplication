@@ -83,7 +83,6 @@ public class CamionService {
     }
 
     //actualizar un camion
-
     public Camion actualizarCamion(Long id, Camion  datosActializados) {
 
         if (datosActializados == null) {
