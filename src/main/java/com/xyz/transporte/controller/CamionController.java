@@ -1,6 +1,7 @@
 package com.xyz.transporte.controller;
 
-import com.xyz.transporte.entity.Camion;
+import com.xyz.transporte.dto.CamionRequest;
+import com.xyz.transporte.dto.CamionResponse;
 import com.xyz.transporte.service.CamionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,28 +20,59 @@ public class CamionController {
         this.camionService = camionService;
     }
 
+    /*
+     * DTO IMPLEMENTADO
+     *
+     * @RequestBody recibe JSON y Spring lo convierte
+     * automáticamente en CamionRequest.
+     *
+     * DTO:
+     * JSON → CamionRequest
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Camion> crear(@RequestBody Camion camion) {
+    public ResponseEntity<CamionResponse> crear(
+            @RequestBody CamionRequest request) {
 
-        Camion nuevoCamion = camionService.guardar(camion);
+        /*
+         * DTO:
+         * CamionRequest → Service
+         */
+        CamionResponse response =
+                camionService.guardar(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(nuevoCamion);
+                .body(response);
     }
 
+    /*
+     * DTO IMPLEMENTADO
+     *
+     * El Controller devuelve una lista de
+     * CamionResponse en lugar de Entity Camion.
+     */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR')")
-    public ResponseEntity<List<Camion>> listar() {
+    public ResponseEntity<List<CamionResponse>> listar() {
 
-        return ResponseEntity.ok(camionService.listar());
+        return ResponseEntity.ok(
+                camionService.listar()
+        );
     }
 
+    /*
+     * DTO IMPLEMENTADO
+     *
+     * Entity → CamionResponse → JSON
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR')")
-    public ResponseEntity<Camion> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<CamionResponse> buscarPorId(
+            @PathVariable Long id) {
 
-        return ResponseEntity.ok(camionService.buscarPorId(id));
+        return ResponseEntity.ok(
+                camionService.buscarPorId(id)
+        );
     }
 }

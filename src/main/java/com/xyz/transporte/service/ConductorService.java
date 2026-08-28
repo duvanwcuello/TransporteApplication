@@ -1,5 +1,7 @@
 package com.xyz.transporte.service;
 
+import com.xyz.transporte.dto.ConductorRequest;
+import com.xyz.transporte.dto.ConductorResponse;
 import com.xyz.transporte.entity.Conductor;
 import com.xyz.transporte.repository.ConductorRepository;
 import org.springframework.stereotype.Service;
@@ -15,24 +17,98 @@ public class ConductorService {
         this.conductorRepository = conductorRepository;
     }
 
-    public Conductor guardar(Conductor conductor) {
+    /*
+     * DTO IMPLEMENTADO
+     *
+     * Recibimos ConductorRequest.
+     */
+    public ConductorResponse guardar(
+            ConductorRequest request) {
 
-        if (conductorRepository.findByDocumento(conductor.getDocumento()).isPresent()) {
-            throw new RuntimeException("Ya existe un conductor con ese documento");
+        if (conductorRepository
+                .findByDocumento(request.getDocumento())
+                .isPresent()) {
+
+            throw new RuntimeException(
+                    "Ya existe un conductor con ese documento"
+            );
         }
 
+        /*
+         * Convertimos:
+         *
+         * ConductorRequest → Conductor
+         */
+        Conductor conductor = new Conductor();
+
+        conductor.setNombre(request.getNombre());
+        conductor.setDocumento(request.getDocumento());
+
+        /*
+         * El estado lo controla el sistema.
+         */
         conductor.setEstado("ACTIVO");
 
-        return conductorRepository.save(conductor);
+        Conductor guardado =
+                conductorRepository.save(conductor);
+
+        /*
+         * Convertimos:
+         *
+         * Conductor → ConductorResponse
+         */
+        return convertirAResponse(guardado);
     }
 
-    public List<Conductor> listar() {
-        return conductorRepository.findAll();
+    /*
+     * DTO IMPLEMENTADO
+     *
+     * Devolvemos DTOs y no Entities.
+     */
+    public List<ConductorResponse> listar() {
+
+        return conductorRepository.findAll()
+                .stream()
+                .map(this::convertirAResponse)
+                .toList();
     }
 
-    public Conductor buscarPorId(Long id) {
+    /*
+     * DTO IMPLEMENTADO
+     */
+    public ConductorResponse buscarPorId(Long id) {
 
-        return conductorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Conductor no encontrado"));
+        Conductor conductor =
+                conductorRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Conductor no encontrado"
+                                )
+                        );
+
+        return convertirAResponse(conductor);
+    }
+
+    /*
+     * DTO IMPLEMENTADO
+     *
+     * Convierte Entity → DTO.
+     */
+    private ConductorResponse convertirAResponse(
+            Conductor conductor) {
+
+        Long camionId = null;
+
+        if (conductor.getCamion() != null) {
+            camionId = conductor.getCamion().getId();
+        }
+
+        return new ConductorResponse(
+                conductor.getId(),
+                conductor.getNombre(),
+                conductor.getDocumento(),
+                conductor.getEstado(),
+                camionId
+        );
     }
 }

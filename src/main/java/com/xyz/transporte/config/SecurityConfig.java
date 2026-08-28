@@ -29,19 +29,24 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
+
+                        /*
+                         * Todas las peticiones necesitan
+                         * autenticación.
+                         */
                         .anyRequest().authenticated()
                 )
 
                 .userDetailsService(usuarioService)
 
-                .httpBasic(httpBasic -> {
-                });
+                .httpBasic(httpBasic -> {});
 
         return http.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 }

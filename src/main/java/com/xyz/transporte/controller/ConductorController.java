@@ -1,6 +1,7 @@
 package com.xyz.transporte.controller;
 
-import com.xyz.transporte.entity.Conductor;
+import com.xyz.transporte.dto.ConductorRequest;
+import com.xyz.transporte.dto.ConductorResponse;
 import com.xyz.transporte.service.ConductorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,33 +16,62 @@ public class ConductorController {
 
     private final ConductorService conductorService;
 
-    public ConductorController(ConductorService conductorService) {
+    public ConductorController(
+            ConductorService conductorService) {
+
         this.conductorService = conductorService;
     }
 
+    /*
+     * DTO IMPLEMENTADO
+     *
+     * JSON recibido desde Postman:
+     *
+     * {
+     *     "nombre": "Carlos Perez",
+     *     "documento": "1234567890"
+     * }
+     *
+     * se convierte automáticamente en:
+     *
+     * ConductorRequest
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Conductor> crear(
-            @RequestBody Conductor conductor) {
+    public ResponseEntity<ConductorResponse> crear(
+            @RequestBody ConductorRequest request) {
 
-        Conductor nuevoConductor =
-                conductorService.guardar(conductor);
+        /*
+         * DTO:
+         *
+         * ConductorRequest → Service
+         */
+        ConductorResponse response =
+                conductorService.guardar(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(nuevoConductor);
+                .body(response);
     }
 
+    /*
+     * DTO IMPLEMENTADO
+     */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR')")
-    public ResponseEntity<List<Conductor>> listar() {
+    public ResponseEntity<List<ConductorResponse>> listar() {
 
-        return ResponseEntity.ok(conductorService.listar());
+        return ResponseEntity.ok(
+                conductorService.listar()
+        );
     }
 
+    /*
+     * DTO IMPLEMENTADO
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR')")
-    public ResponseEntity<Conductor> buscarPorId(
+    public ResponseEntity<ConductorResponse> buscarPorId(
             @PathVariable Long id) {
 
         return ResponseEntity.ok(

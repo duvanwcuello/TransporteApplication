@@ -17,27 +17,41 @@ public class DataInitializer {
 
         return args -> {
 
-            if (usuarioRepository.findByUsername("admin").isEmpty()) {
+            /*
+             * Crear usuario ADMIN
+             */
+            if (usuarioRepository
+                    .findByUsername("admin")
+                    .isEmpty()) {
 
                 Usuario admin = new Usuario();
 
                 admin.setUsername("admin");
+
                 admin.setPassword(
                         passwordEncoder.encode("1234")
                 );
+
                 admin.setRol("ADMIN");
 
                 usuarioRepository.save(admin);
             }
 
-            if (usuarioRepository.findByUsername("supervisor").isEmpty()) {
+            /*
+             * Crear usuario SUPERVISOR
+             */
+            if (usuarioRepository
+                    .findByUsername("supervisor")
+                    .isEmpty()) {
 
                 Usuario supervisor = new Usuario();
 
                 supervisor.setUsername("supervisor");
+
                 supervisor.setPassword(
                         passwordEncoder.encode("1234")
                 );
+
                 supervisor.setRol("SUPERVISOR");
 
                 usuarioRepository.save(supervisor);
