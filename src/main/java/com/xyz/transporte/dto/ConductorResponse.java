@@ -15,7 +15,8 @@ public class ConductorResponse {
     private String nombre;
     private String documento;
     private String estado;
-    private Long camionId;
+    private CamionAsignadoResponse asignacion;
+
 
     public ConductorResponse() {
     }
@@ -25,13 +26,13 @@ public class ConductorResponse {
             String nombre,
             String documento,
             String estado,
-            Long camionId) {
+            CamionAsignadoResponse asignacion) {
 
         this.id = id;
         this.nombre = nombre;
         this.documento = documento;
         this.estado = estado;
-        this.camionId = camionId;
+        this.asignacion = asignacion;
     }
 
     public Long getId() {
@@ -50,7 +51,9 @@ public class ConductorResponse {
         return estado;
     }
 
-    public Long getCamionId() {
-        return camionId;
+    public CamionAsignadoResponse getAsignacion() {
+        return asignacion;
     }
+
+
 }

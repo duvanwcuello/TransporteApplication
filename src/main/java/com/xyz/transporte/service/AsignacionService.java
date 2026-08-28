@@ -1,5 +1,6 @@
 package com.xyz.transporte.service;
 
+import com.xyz.transporte.dto.CamionAsignadoResponse;
 import com.xyz.transporte.dto.ConductorResponse;
 import com.xyz.transporte.entity.Camion;
 import com.xyz.transporte.entity.Conductor;
@@ -25,8 +26,8 @@ public class AsignacionService {
     /*
      * DTO IMPLEMENTADO
      *
-     * La operación trabaja internamente con
-     * Entities, pero devuelve ConductorResponse.
+     * Asigna un camión a un conductor
+     * y devuelve la información mediante DTO.
      */
     public ConductorResponse asignarConductor(
             Long conductorId,
@@ -48,26 +49,40 @@ public class AsignacionService {
                                 )
                         );
 
+        /*
+         * Realizamos la asociación.
+         */
         conductor.setCamion(camion);
 
+        /*
+         * Guardamos el cambio.
+         */
         Conductor actualizado =
                 conductorRepository.save(conductor);
 
         /*
-         * Entity → DTO
+         * DTO IMPLEMENTADO
+         *
+         * Entity Camion → CamionAsignadoResponse
          */
-        Long idCamion = null;
+        CamionAsignadoResponse asignacion =
+                new CamionAsignadoResponse(
+                        camion.getId(),
+                        camion.getPlaca(),
+                        camion.getTipoVehiculo()
+                );
 
-        if (actualizado.getCamion() != null) {
-            idCamion = actualizado.getCamion().getId();
-        }
-
+        /*
+         * DTO IMPLEMENTADO
+         *
+         * Entity Conductor → ConductorResponse
+         */
         return new ConductorResponse(
                 actualizado.getId(),
                 actualizado.getNombre(),
                 actualizado.getDocumento(),
                 actualizado.getEstado(),
-                idCamion
+                asignacion
         );
     }
 }

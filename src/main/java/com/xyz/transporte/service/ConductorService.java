@@ -1,7 +1,9 @@
 package com.xyz.transporte.service;
 
+import com.xyz.transporte.dto.CamionAsignadoResponse;
 import com.xyz.transporte.dto.ConductorRequest;
 import com.xyz.transporte.dto.ConductorResponse;
+import com.xyz.transporte.entity.Camion;
 import com.xyz.transporte.entity.Conductor;
 import com.xyz.transporte.repository.ConductorRepository;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ public class ConductorService {
     private final ConductorRepository conductorRepository;
 
     public ConductorService(ConductorRepository conductorRepository) {
+
         this.conductorRepository = conductorRepository;
     }
 
@@ -97,10 +100,22 @@ public class ConductorService {
     private ConductorResponse convertirAResponse(
             Conductor conductor) {
 
-        Long camionId = null;
+        CamionAsignadoResponse asignacion = null;
 
         if (conductor.getCamion() != null) {
-            camionId = conductor.getCamion().getId();
+            Camion camion = conductor.getCamion();
+
+            /*
+             * Convertimos la Entity Camion
+             * en CamionAsignadoResponse.
+             */
+
+            asignacion = new CamionAsignadoResponse(
+                    camion.getId(),
+                    camion.getPlaca(),
+                    camion.getTipoVehiculo()
+
+                    );
         }
 
         return new ConductorResponse(
@@ -108,7 +123,7 @@ public class ConductorService {
                 conductor.getNombre(),
                 conductor.getDocumento(),
                 conductor.getEstado(),
-                camionId
+                asignacion
         );
     }
 }
