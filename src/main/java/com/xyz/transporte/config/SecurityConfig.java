@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+            HttpSecurity http, JwtFilter K) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
@@ -34,6 +34,7 @@ public class SecurityConfig {
                          * Todas las peticiones necesitan
                          * autenticación.
                          */
+                        .requestMatchers()
                         .anyRequest().authenticated()
                 )
 
