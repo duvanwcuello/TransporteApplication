@@ -1,3 +1,3 @@
 Integrantes:
-Duvan Wilchez
-Jose Hurtado
+Duvan Wilchez Cuello
+Jose Miguel Castillo Hurtado
